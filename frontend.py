@@ -51,4 +51,6 @@ if st.button("Ask Agent"):
 def stop_backend():
     backend_process.terminate()
 
-st.on_event("shutdown", stop_backend)
+# Register the stop_backend function to be called when the script exits
+import atexit
+atexit.register(stop_backend)
