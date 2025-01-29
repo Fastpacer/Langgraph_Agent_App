@@ -43,8 +43,3 @@ def chat_endpoint(request: RequestState):
     except Exception as e:
         logger.error(f"Error in chat_endpoint: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
-# Step 3: Run app and explore swagger UI Documents
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8006)  # Change the port to 8006 or any other available port
