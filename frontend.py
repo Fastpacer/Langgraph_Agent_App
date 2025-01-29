@@ -1,5 +1,12 @@
 # Step 1- Setup UI with streamlit
 import streamlit as st
+import os
+import subprocess
+import time
+
+# Start the FastAPI backend
+backend_process = subprocess.Popen(["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "8006"])
+time.sleep(5)  # Give the backend some time to start
 
 st.set_page_config(page_title="Langgraph Agent UI", page_icon="🤖", layout="centered")
 st.title("AI chatbot Agent with Langgraph and Search Tool")
@@ -12,11 +19,11 @@ selected_model = st.selectbox("Select a model", MODEL_NAMES_GROK)
 allow_web_search = st.checkbox("Allow web search")
 user_query = st.text_area("Enter your query", height=145, placeholder="Enter your query here")
 
+# Use local URL for API
 API_URL = "http://127.0.0.1:8006/chat"
 
 if st.button("Ask Agent"):
     if user_query.strip():
-        # Step 2- Connect with backend through an URL
         import requests
 
         payload = {
@@ -39,3 +46,9 @@ if st.button("Ask Agent"):
                 st.error(f"Error: {response.status_code}")
         except requests.exceptions.RequestException as e:
             st.error(f"Connection error: {e}")
+
+# Stop the FastAPI backend when the Streamlit app stops
+def stop_backend():
+    backend_process.terminate()
+
+st.on_event("shutdown", stop_backend)
